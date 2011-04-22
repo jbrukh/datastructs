@@ -1,6 +1,6 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=bitvector
+TARG=container/bitvector
 GOFILES=\
 	bitvector.go\
 

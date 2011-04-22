@@ -43,8 +43,8 @@ func (v *BitVector) accomodate(index uint) {
         newSlice := make([]byte, int(words/length+1)*length)
 
         copy(newSlice,v.bits)
-        v.bits = newSlice 
-    }        
+        v.bits = newSlice
+    }
 }
 
 func (v *BitVector) accomodateLength(length int) {
@@ -74,7 +74,7 @@ func (v *BitVector) Clear() {
 // String will create a string representation of the vector.
 func (v *BitVector) String() string {
     buf := bytes.NewBufferString("")
-    for _, word := range v.bits {   
+    for _, word := range v.bits {
         for inx :=0; inx < WORDSIZE; inx++ {
             // if the inx-th bit is 1, result 
             // is 1; otherwise 0; following does NOT
@@ -144,4 +144,3 @@ func (v *BitVector) And(w *BitVector) {
         }
     }
 }
-
