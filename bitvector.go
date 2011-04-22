@@ -122,7 +122,7 @@ func (v *BitVector) GetInt(index uint) int {
 // Copy returns a copy of this BitVector.
 func (v *BitVector) Copy() *BitVector {
     w := &BitVector{}
-    w.accommodateLength(len(v.bits))
+    w.accomodateLength(len(v.bits))
     copy(w.bits,v.bits)
     return w
 }
