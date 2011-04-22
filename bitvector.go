@@ -112,7 +112,7 @@ func (v *BitVector) Get(index uint) bool {
 }
 
 // Get will retrieve the value of the bit at the
-// specified index as an unsigned integer.
+// specified index as an signed integer.
 func (v *BitVector) GetInt(index uint) int {
     word, bit := locate(index)
     if int(word) >= len(v.bits) {
