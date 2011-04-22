@@ -1,7 +1,7 @@
-include $(GOROOT)/src/Make.inc
-	
-TARG=container/bitvector
-GOFILES=\
-	bitvector.go\
+all: bitvector.a bfilter.a
 
-include $(GOROOT)/src/Make.pkg
+bitvector.a:
+	(cd src/container/bitvector; $(GOBIN)/gomake install)
+
+bfilter.a:
+	(cd src/container/bfilter; $(GOBIN)/gomake install)
