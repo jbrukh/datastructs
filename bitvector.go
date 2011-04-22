@@ -24,9 +24,9 @@ type BitVector struct {
 // the specified minimum length.  When necessary, the vector
 // will automatically grow to accomodate the extra data. 
 func New(length uint) *BitVector {
-    return &BitVector{
-        make([]byte, int((length-1)/WORDSIZE)+1),
-    }
+    v := &BitVector{}
+    v.accomodate(length-1)
+    return v
 }
 
 // Locate will produce the location -- word and bit index --
@@ -35,13 +35,18 @@ func locate(index uint) (word, bit uint) {
     return index/WORDSIZE, index%WORDSIZE
 }
 
+// max returns the maximum of two integers.
+func max(a,b int) int {
+    if a < b { return b }
+    return a
+}
+
 // accomodate will grow the BitVector to accomodate new entries.
 func (v *BitVector) accomodate(index uint) {
     words := int(index/WORDSIZE)+1
     length := len(v.bits)
     if words > length {  // reallocate
-        newSlice := make([]byte, int(words/length+1)*length)
-
+        newSlice := make([]byte, max(2*length,words))
         copy(newSlice,v.bits)
         v.bits = newSlice
     }
@@ -114,17 +119,32 @@ func (v *BitVector) GetInt(index uint) int {
     return int((v.bits[word] & basisByte(bit)) >> (7-bit))
 }
 
-func (v *BitVector) Not() {
+// Copy returns a copy of this BitVector.
+func (v *BitVector) Copy() *BitVector {
+    w := &BitVector{}
+    w.accommodateLength(len(v.bits))
+    copy(w.bits,v.bits)
+    return w
+}
 
+// Not negates this BitVector.
+func (v *BitVector) Not() {
     for inx,_ := range v.bits {
         v.bits[inx] = ^v.bits[inx]
     }
 }
 
+// Not returns the negation of this BitVector.
+func Not(v *BitVector) *BitVector {
+    w := v.Copy()
+    w.Not()
+    return w
+}
+
+// Or will OR this BitVector with another one.
 func (v *BitVector) Or(w *BitVector) {
     length := len(w.bits)
     v.accomodateLength(length)
-
     for inx,_ := range v.bits {
         if inx < length {
             v.bits[inx] |= w.bits[inx]
@@ -132,10 +152,17 @@ func (v *BitVector) Or(w *BitVector) {
     }
 }
 
+// Or returns the OR of two BitVectors.
+func Or(v,w *BitVector) *BitVector {
+    z := v.Copy()
+    z.Or(w)
+    return z
+}
+
+// And will AND this BitVector with another one.
 func (v *BitVector) And(w *BitVector) {
     length := len(w.bits)
     v.accomodateLength(length)
-
     for inx,_ := range v.bits {
         if inx < length {
             v.bits[inx] &= w.bits[inx]
@@ -143,4 +170,11 @@ func (v *BitVector) And(w *BitVector) {
             v.bits[inx] = 0 //
         }
     }
+}
+
+// And returns the AND of two BitVectors.
+func And(v,w *BitVector) *BitVector {
+    z := v.Copy()
+    z.And(w)
+    return z
 }
