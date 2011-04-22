@@ -1,0 +1,24 @@
+Datastructs Package
+
+This package provides a fast Go implementation of:
+
+  * BitVector
+
+How to install:
+
+    $ git clone git@github.com:jbrukh/datastructs.git
+    $ cd datastructs.git && make install
+
+Example:
+
+    package main
+    import (
+        "container/bitvector"
+        "fmt"
+    )
+
+    func main() {
+        v := bitvector.New(10)
+        v.Set(1,true)
+        fmt.Println(v)
+    }
