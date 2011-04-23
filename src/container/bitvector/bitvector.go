@@ -85,11 +85,11 @@ func (v *BitVector) Equal(w *BitVector) bool {
 // the specified boolean value.
 func (v *BitVector) Set(index int, value bool) {
     v.accomodate(index+1)
-    word, bit := locate(index)
+    word, bitmask := locate(index)
     if value {
-        v.bits[word] |= basisByte(bit)
+        v.bits[word] |= bitmask
     } else {
-        v.bits[word] &= ^basisByte(bit)
+        v.bits[word] &= ^bitmask
     }
 }
 
@@ -102,11 +102,11 @@ func (v *BitVector) Get(index int) bool {
 // Get will retrieve the value of the bit at the
 // specified index as an signed integer.
 func (v *BitVector) GetInt(index int) int {
-    word, bit := locate(index)
+    word, bitmask := locate(index)
     if word >= len(v.bits) {
         return 0
     }
-    return int(v.bits[word] & basisByte(bit) >> uint(7 - bit))
+    return int(v.bits[word] & bitmask >> uint(7 - index % WORDSIZE))
 }
 
 // Not negates this BitVector.
@@ -161,8 +161,8 @@ func And(v, w *BitVector) *BitVector {
 
 // Locate will produce the location -- word and bit index --
 // of the specified absolute index of the vector.
-func locate(index int) (word, bit int) {
-    return index / WORDSIZE, index % WORDSIZE
+func locate(index int) (word int, bit byte) {
+    return index / WORDSIZE, 0x80 >> uint(index % WORDSIZE)
 }
 
 // accomodate will grow the BitVector to accomodate new entries.
@@ -181,13 +181,6 @@ func (v *BitVector) accomodate(elements int) {
 // number of bytes.  The parameter must be positive.
 func (v *BitVector) accomodateBytes(length int) {
     v.accomodate(length * WORDSIZE)
-}
-
-// basisByte returns a byte with a single non-zero bit
-// set at the specified index.
-func basisByte(index int) byte {
-    // does NOT scale with WORDSIZE
-    return 0x80 >> uint(index)
 }
 
 // getByte returns the value of the inx-th byte, if
