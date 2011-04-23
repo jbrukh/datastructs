@@ -111,6 +111,49 @@ func TestEqual(t *testing.T) {
 	v := New(16)
 	w := New(8)
 	assert(t,v.Equal(w),"%s should be equal to %s", v, w)
+	assert(t,w.Equal(v),"%s should be equal to %s", v, w)
+    w.Not();
+	assert(t,!v.Equal(w),"%s should not be equal to %s", v, w)
+	assert(t,!w.Equal(v),"%s should not be equal to %s", v, w)
+}
+
+func TestOr(t *testing.T) {
+	v, w, z := New(8), New(8), New(8)
+	z.Not()
+	for i := 0; i < 8; i++ {
+		if i % 2 == 0 {
+			v.Set(i,true)
+		} else {
+			w.Set(i,true)
+		}
+    }
+	v.Or(w)
+	assert(t,v.Equal(z),"v should all be ones: %s",v)
+}
+
+func TestAnd(t *testing.T) {
+	v, w, z := New(8), New(8), New(8)
+	for i := 0; i < 8; i++ {
+		if i % 2 == 0 {
+			v.Set(i,true)
+		} else {
+			w.Set(i,true)
+		}
+    }
+	v.And(w)
+	assert(t,v.Equal(z),"v should all be zeros: %s",v)
+	z.Not()
+	v.And(z)
+	assert(t,v.Equal(v),"v should be itself: %s",v)
+	v.And(v)
+	assert(t,v.Equal(v),"v should be itself: %s",v)
+}
+
+func BenchmarkEqual(b *testing.B) {
+    v, w := New(VECTOR_LEN), New(VECTOR_LEN)
+	for i := 0; i < b.N; i++ {
+		v.Equal(w)
+	}
 }
 
 func BenchmarkAllocation(b *testing.B) {
