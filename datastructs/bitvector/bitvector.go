@@ -8,6 +8,7 @@ package bitvector
 import (
     "bytes"
     "fmt"
+	. "datastructs/util"
 )
 
 // CONSTANTS
@@ -72,7 +73,7 @@ func (v *BitVector) Equal(w *BitVector) bool {
 	if w == nil {
 		return false
 	}
-	minx := max(len(v.bits),len(w.bits))
+	minx := Max(len(v.bits),len(w.bits))
 	for i := 0; i < minx; i++ {
 		if v.getByte(i) != w.getByte(i) {
 			return false
@@ -128,7 +129,7 @@ func (v *BitVector) Or(w *BitVector) {
 	if w == nil {
 		return
 	}
-    length := max(len(v.bits), len(w.bits))
+    length := Max(len(v.bits), len(w.bits))
     for inx := 0; inx < length; inx++ {
 		v.setByte(inx, v.getByte(inx) | w.getByte(inx))
 	}
@@ -146,7 +147,7 @@ func (v *BitVector) And(w *BitVector) {
     if w == nil {
 		return
 	}
-	length := max(len(v.bits), len(w.bits))
+	length := Max(len(v.bits), len(w.bits))
     for inx := 0; inx < length; inx++ {
 		v.setByte(inx, v.getByte(inx) & w.getByte(inx))
 	}
@@ -171,7 +172,7 @@ func (v *BitVector) accomodate(elements int) {
     wordsNeeded := (elements - 1) / WORDSIZE + 1
     words := len(v.bits)
     if wordsNeeded > words { // reallocate
-        newSlice := make([]byte, max(2*words, wordsNeeded))
+        newSlice := make([]byte, Max(2*words, wordsNeeded))
         copy(newSlice, v.bits)
         v.bits = newSlice
     }
@@ -202,20 +203,4 @@ func (v *BitVector) setByte(inx int, data byte) {
 	    v.accomodateBytes(inx+1)	// will only resize for nontrivial data
 	}
 	v.bits[inx] = data
-}
-
-// max returns the maximum of two integers.
-func max(a, b int) int {
-    if a < b {
-        return b
-    }
-    return a
-}
-
-// min returns the maximum of two integers.
-func min(a, b int) int {
-    if a > b {
-        return b
-    }
-    return a
 }
