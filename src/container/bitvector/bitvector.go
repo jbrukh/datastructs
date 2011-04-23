@@ -29,42 +29,6 @@ func New(length uint) *BitVector {
     return v
 }
 
-// Locate will produce the location -- word and bit index --
-// of the specified absolute index of the vector.
-func locate(index uint) (word, bit uint) {
-    return index / WORDSIZE, index % WORDSIZE
-}
-
-// max returns the maximum of two integers.
-func max(a, b int) int {
-    if a < b {
-        return b
-    }
-    return a
-}
-
-// accomodate will grow the BitVector to accomodate new entries.
-func (v *BitVector) accomodate(index uint) {
-    words := int(index/WORDSIZE) + 1
-    length := len(v.bits)
-    if words > length { // reallocate
-        newSlice := make([]byte, max(2*length, words))
-        copy(newSlice, v.bits)
-        v.bits = newSlice
-    }
-}
-
-func (v *BitVector) accomodateLength(length int) {
-    v.accomodate(uint(length*WORDSIZE) - 1)
-}
-
-// basisByte returns a byte with a single non-zero bit
-// set at the specified index.
-func basisByte(index uint) byte {
-    // does NOT scale with WORDSIZE
-    return 0x80 >> index
-}
-
 // Length returns the current length of the BitVector in bits.
 func (v *BitVector) Length() int {
     return WORDSIZE * len(v.bits)
@@ -76,6 +40,14 @@ func (v *BitVector) Clear() {
     for inx, _ := range v.bits {
         v.bits[inx] = 0
     }
+}
+
+// Copy returns a copy of this BitVector.
+func (v *BitVector) Copy() *BitVector {
+    w := &BitVector{}
+    w.accomodateBytes(len(v.bits))
+    copy(w.bits, v.bits)
+    return w
 }
 
 // String will create a string representation of the vector.
@@ -91,6 +63,22 @@ func (v *BitVector) String() string {
         }
     }
     return string(buf.Bytes())
+}
+
+// Equal returns true if and only if the BitVector
+// provided is equal to this BitVector in the sense
+// that all bit settings coincide in both structures.
+func (v *BitVector) Equal(w *BitVector) bool {
+	if w == nil {
+		return false
+	}
+	minx := max(len(v.bits),len(w.bits))
+	for i := 0; i < minx; i++ {
+		if v.getByte(i) != w.getByte(i) {
+			return false
+		}
+	}
+	return true
 }
 
 // Set will set the bit at the specified index to
@@ -121,14 +109,6 @@ func (v *BitVector) GetInt(index uint) int {
     return int((v.bits[word] & basisByte(bit)) >> (7 - bit))
 }
 
-// Copy returns a copy of this BitVector.
-func (v *BitVector) Copy() *BitVector {
-    w := &BitVector{}
-    w.accomodateLength(len(v.bits))
-    copy(w.bits, v.bits)
-    return w
-}
-
 // Not negates this BitVector.
 func (v *BitVector) Not() {
     for inx, _ := range v.bits {
@@ -146,7 +126,7 @@ func Not(v *BitVector) *BitVector {
 // Or will OR this BitVector with another one.
 func (v *BitVector) Or(w *BitVector) {
     length := len(w.bits)
-    v.accomodateLength(length)
+    v.accomodateBytes(length)
     for inx, _ := range v.bits {
         if inx < length {
             v.bits[inx] |= w.bits[inx]
@@ -164,7 +144,7 @@ func Or(v, w *BitVector) *BitVector {
 // And will AND this BitVector with another one.
 func (v *BitVector) And(w *BitVector) {
     length := len(w.bits)
-    v.accomodateLength(length)
+    v.accomodateBytes(length)
     for inx, _ := range v.bits {
         if inx < length {
             v.bits[inx] &= w.bits[inx]
@@ -179,4 +159,62 @@ func And(v, w *BitVector) *BitVector {
     z := v.Copy()
     z.And(w)
     return z
+}
+
+// Locate will produce the location -- word and bit index --
+// of the specified absolute index of the vector.
+func locate(index uint) (word, bit uint) {
+    return index / WORDSIZE, index % WORDSIZE
+}
+
+// accomodate will grow the BitVector to accomodate new entries.
+func (v *BitVector) accomodate(index uint) {
+    if index < 0 {
+        panic("must specify nonnegative index")
+    }
+    words := int(index/WORDSIZE) + 1
+    length := len(v.bits)
+    if words > length { // reallocate
+        newSlice := make([]byte, max(2*length, words))
+        copy(newSlice, v.bits)
+        v.bits = newSlice
+    }
+}
+
+func (v *BitVector) accomodateBytes(length int) {
+    v.accomodate(uint(length*WORDSIZE) - 1)
+}
+
+// basisByte returns a byte with a single non-zero bit
+// set at the specified index.
+func basisByte(index uint) byte {
+    // does NOT scale with WORDSIZE
+    return 0x80 >> index
+}
+
+// getByte returns the value of the inx-th byte, if
+// it is allocated, or 0.  That is, the vector is
+// assumed to have an infinite 0-sequence extending
+// to the right.
+func (v *BitVector) getByte(inx int) byte {
+    if inx < len(v.bits) {
+        return v.bits[inx]
+    }
+    return 0
+}
+
+// max returns the maximum of two integers.
+func max(a, b int) int {
+    if a < b {
+        return b
+    }
+    return a
+}
+
+// min returns the maximum of two integers.
+func min(a, b int) int {
+    if a > b {
+        return b
+    }
+    return a
 }
