@@ -7,7 +7,10 @@ This package provides a fast Go implementation of:
 How to install:
 
     $ git clone git@github.com:jbrukh/datastructs.git
-    $ cd datastructs.git && make install
+    $ cd datastructs.git/src && ./build install
+
+Thanks to go-gb (https://github.com/skelterjohn/go-gb/) for
+providing multi-package build support.
 
 Example:
 
