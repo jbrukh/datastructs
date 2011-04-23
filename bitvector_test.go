@@ -162,10 +162,31 @@ func BenchmarkAllocation(b *testing.B) {
     }
 }
 
+func BenchmarkReallocation(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+		v := New(VECTOR_LEN)
+        v.Set(VECTOR_LEN+100,true)
+    }
+}
+
 func BenchmarkNot(b *testing.B) {
 	v := New(VECTOR_LEN)
 	for i := 0; i < b.N; i++ {
 		v.Not()
+	}
+}
+
+func BenchmarkOr(b *testing.B) {
+	v := New(VECTOR_LEN)
+	for i := 0; i < b.N; i++ {
+		v.Or(v)
+	}
+}
+
+func BenchmarkAnd(b *testing.B) {
+	v := New(VECTOR_LEN)
+	for i := 0; i < b.N; i++ {
+		v.And(v)
 	}
 }
 
