@@ -9,6 +9,7 @@ else
 echo Building \
 && echo "(in datastructs)" && cd datastructs && make $1 && cd - > /dev/null \
 && echo "(in datastructs/util)" && cd datastructs/util && make $1 && cd - > /dev/null \
+&& echo "(in datastructs/hashset)" && cd datastructs/hashset && make $1 && cd - > /dev/null \
 && echo "(in datastructs/bitvector)" && cd datastructs/bitvector && make $1 && cd - > /dev/null \
 
 fi
