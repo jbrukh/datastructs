@@ -24,3 +24,9 @@ func Assert( t *testing.T, value bool, format string, args ...interface{} ) {
         t.Errorf(format,args...)
     }
 }
+
+func BenchmarkFunc(b *testing.B, someFunc func()) {
+	for i := 0; i < b.N; i++ {
+		someFunc()
+    }
+}
