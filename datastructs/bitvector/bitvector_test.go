@@ -1,3 +1,6 @@
+// Copyright (c) 2011.  Jake Brukhman <jbrukh@gmail.com>.  All rights reserved.
+// This software is governed by BSD-style license, see LICENSE file.
+
 package bitvector
 
 import (
