@@ -1,8 +1,9 @@
 Datastructs Package
 
-This package provides a fast Go implementation of:
+This package provides Go implementations of:
 
   * BitVector
+  * HashSet
 
 How to install:
 
