@@ -1,3 +1,6 @@
+// Copyright (c) 2011.  Jake Brukhman <jbrukh@gmail.com>.  All rights reserved.
+// This software is governed by BSD-style license, see LICENSE file.
+
 package datastructs
 
 import (
@@ -22,6 +25,7 @@ func HashToBytes(obj interface{}) []byte {
     return digest.Sum()
 }
 
+// Returns a uint64 hash based on HashToBytes().
 func Hash(obj interface{}) (code uint64) {
 	hashBytes := HashToBytes(obj)
 	for i := 0; i < 8; i++ {
