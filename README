@@ -8,7 +8,7 @@ This package provides Go implementations of:
 How to install:
 
     $ git clone git@github.com:jbrukh/datastructs.git
-    $ cd datastructs.git/src && ./build install
+    $ cd datastructs.git/datastructs && ./build && ./build install
 
 Thanks to go-gb (https://github.com/skelterjohn/go-gb/) for
 providing multi-package build support.
@@ -17,7 +17,7 @@ Example:
 
     package main
     import (
-        "container/bitvector"
+        "datastructs/bitvector"
         "fmt"
     )
 

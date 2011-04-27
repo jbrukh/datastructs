@@ -10,7 +10,8 @@ import (
 
 // HashSet represents a hash set.
 type HashSet struct {
-	bins map[uint64]*list.List
+	bins     map[uint64]*list.List
+	capacity int
 }
 
 // New returns a new HashSet with the desired capacity. The capacity
@@ -18,7 +19,8 @@ type HashSet struct {
 // to collisions.
 func New(capacity int) *HashSet {
 	return &HashSet{
-		make(map[uint64]*list.List, capacity),
+		capacity: capacity,
+		bins:     make(map[uint64]*list.List, capacity),
 	}
 }
 
@@ -41,7 +43,7 @@ func listContains(lst *list.List, obj Hashable) bool {
 // object.  If the bin does not exist, it is created and placed
 // in the internal map.
 func (this *HashSet) getBin(obj Hashable) *list.List {
-	hashCode := obj.HashCode()
+	hashCode := obj.HashCode() % uint64(this.capacity)
 	lst, ok := this.bins[hashCode]
 	if !ok {
 		lst = list.New()
@@ -76,7 +78,7 @@ func (this *HashSet) Remove(obj Hashable) (removed interface{}, ok bool) {
 // Contains returns true if and only if this set contains
 // the given object.
 func (this *HashSet) Contains(obj Hashable) bool {
-	hashCode := obj.HashCode()
+	hashCode := obj.HashCode() % uint64(this.capacity)
 	if lst, ok := this.bins[hashCode]; ok {
 		return listContains(lst, obj)
 	}
