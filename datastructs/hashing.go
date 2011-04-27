@@ -9,8 +9,8 @@ import (
 )
 
 var (
-    digest = md5.New()
-    encoder = gob.NewEncoder(digest)
+	digest  = md5.New()
+	encoder = gob.NewEncoder(digest)
 )
 
 // Hash creates an MD5 hash of an arbitrary object, and
@@ -18,11 +18,11 @@ var (
 // create the hash, and this function panics if the
 // serialization cannot be performed.
 func HashToBytes(obj interface{}) []byte {
-    digest.Reset()
-    if err := encoder.Encode(obj); err != nil {
-        panic(err)
-    }
-    return digest.Sum()
+	digest.Reset()
+	if err := encoder.Encode(obj); err != nil {
+		panic(err)
+	}
+	return digest.Sum()
 }
 
 // Returns a uint64 hash based on HashToBytes().
@@ -30,7 +30,7 @@ func Hash(obj interface{}) (code uint64) {
 	hashBytes := HashToBytes(obj)
 	for i := 0; i < 8; i++ {
 		code |= (uint64(hashBytes[0]) << uint(i*8))
-    }
+	}
 	return
 }
 

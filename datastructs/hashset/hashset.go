@@ -30,9 +30,9 @@ func listContains(lst *list.List, obj Hashable) bool {
 		panic("you are providing a nil list")
 	}
 	for e := lst.Front(); e != nil; e = e.Next() {
-        if obj.Equal(e.Value) {
+		if obj.Equal(e.Value) {
 			return true
-        }
+		}
 	}
 	return false
 }
@@ -66,10 +66,10 @@ func (this *HashSet) Put(obj Hashable) bool {
 func (this *HashSet) Remove(obj Hashable) (removed interface{}, ok bool) {
 	lst := this.getBin(obj)
 	for e := lst.Front(); e != nil; e = e.Next() {
-        if obj.Equal(e.Value) {
-            return lst.Remove(e), true
-        }
-    }
+		if obj.Equal(e.Value) {
+			return lst.Remove(e), true
+		}
+	}
 	return nil, false
 }
 
@@ -77,8 +77,8 @@ func (this *HashSet) Remove(obj Hashable) (removed interface{}, ok bool) {
 // the given object.
 func (this *HashSet) Contains(obj Hashable) bool {
 	hashCode := obj.HashCode()
-    if lst, ok := this.bins[hashCode]; ok {
-		return listContains(lst,obj)
+	if lst, ok := this.bins[hashCode]; ok {
+		return listContains(lst, obj)
 	}
 	return false
 }
