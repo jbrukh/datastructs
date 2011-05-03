@@ -11,39 +11,84 @@ type PrefixTree struct {
 // node is a node in the prefix tree.
 type node struct {
 	valid bool
-	kids  map[string]*node
+	kids  map[int]*node
 }
 
 // Create a new PrefixTree.
 func New() *PrefixTree {
 	return &PrefixTree{
-		root: new(node),
+		root: newNode(),
 	}
 }
 
-// Return the number of words contained in this
-// prefix tree.
+// newNode creates a new prefix tree node.
+func newNode() *node {
+	return &node{
+		kids: make(map[int]*node),
+	}
+}
+
+// Return the number of words contained in this PrefixTree.
 func (this *PrefixTree) Size() int {
 	return this.size
 }
 
-// Returns true if and only 
+// Returns true if and only if the tree contains the given
+// word.
 func (this *PrefixTree) Contains(word string) bool {
-	if word == nil || word == "" {
-
-	}
-	ptr := this.root
-	for _, letter := range word {
-
-	}
+	n, ok := getPrefix(word)
+	return ok && n.valid
 }
 
-func (this *PrefixTree) Put(word string) {
-	ptr := this.root
-	for _, letter := range word {
-		if n, ok := ptr.kids[letter]; ok {
-			// 
-		}
+// Returns true if and only if the PrefixTree contains the
+// given prefix.
+func (this *PrefixTree) ContainsPrefix(prefix string) bool {
+	_, ok := getPrefix(prefix)
+	return ok
+}
 
+// GetAll returns a list of words that begin with the
+// specified prefix.
+func (this *PrefixTree) GetAll(prefix string) []string {
+	return nil
+}
+
+func dfs(n *node) []string {
+	
+}
+
+func (this *PrefixTree) getPrefix(prefix string) (n *node, ok bool) {
+	ptr := this.root
+	var ok bool
+    for _, symbol := range prefix {
+        ptr, ok = ptr.kids[symbol]
+        if !ok {
+            break
+        }
+    }
+    return ptr, ok
+}
+
+// getChild will return the child of the given node for the
+// given symbol. If no such child exists, it is created.
+func getChild(n *node, symbol int) *node {
+	ptr, ok := n.kids[symbol]
+	if !ok {
+		ptr = newNode()
+		n.kids[symbol] = ptr
 	}
+	return ptr
+}
+
+// Put inserts a word into the PrefixTree.
+func (this *PrefixTree) Put(word string) {
+	if len(word) < 1 {
+		return
+	}
+	ptr := this.root
+	for _, symbol := range word {
+		ptr = getChild(ptr, symbol)
+	}
+	ptr.valid = true
+	this.size++
 }
