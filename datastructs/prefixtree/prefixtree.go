@@ -36,37 +36,26 @@ func (this *PrefixTree) Size() int {
 // Returns true if and only if the tree contains the given
 // word.
 func (this *PrefixTree) Contains(word string) bool {
-	n, ok := getPrefix(word)
+	n, ok := this.getPrefix(word)
 	return ok && n.valid
 }
 
 // Returns true if and only if the PrefixTree contains the
 // given prefix.
 func (this *PrefixTree) ContainsPrefix(prefix string) bool {
-	_, ok := getPrefix(prefix)
+	_, ok := this.getPrefix(prefix)
 	return ok
-}
-
-// GetAll returns a list of words that begin with the
-// specified prefix.
-func (this *PrefixTree) GetAll(prefix string) []string {
-	return nil
-}
-
-func dfs(n *node) []string {
-	
 }
 
 func (this *PrefixTree) getPrefix(prefix string) (n *node, ok bool) {
 	ptr := this.root
-	var ok bool
-    for _, symbol := range prefix {
-        ptr, ok = ptr.kids[symbol]
-        if !ok {
-            break
-        }
-    }
-    return ptr, ok
+	for _, symbol := range prefix {
+		ptr, ok = ptr.kids[symbol]
+		if !ok {
+			break
+		}
+	}
+	return ptr, ok
 }
 
 // getChild will return the child of the given node for the

@@ -4,14 +4,18 @@ This package provides Go implementations of:
 
   * BitVector
   * HashSet
+  * PrefixTree
 
 How to install:
 
     $ git clone git@github.com:jbrukh/datastructs.git
     $ cd datastructs.git/datastructs && ./build && ./build install
+    
+    # or, with go-gb:
+    $ cd datastructs.git && gb && gb -t
 
-Thanks to go-gb (https://github.com/skelterjohn/go-gb/) for
-providing multi-package build support.
+Thanks to go-gb (http://code.google.com/p/go-gb/) for providing 
+multi-package build support.
 
 Example:
 
